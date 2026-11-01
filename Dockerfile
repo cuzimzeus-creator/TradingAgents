@@ -20,6 +20,12 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
+# Claude Code CLI: backs the claude_code provider (Claude Pro/Max plan).
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends nodejs npm ca-certificates \
+ && npm install -g @anthropic-ai/claude-code \
+ && rm -rf /var/lib/apt/lists/* /root/.npm
+
 RUN useradd --create-home appuser \
  && install -d -m 0755 -o appuser -g appuser /home/appuser/.tradingagents
 USER appuser
